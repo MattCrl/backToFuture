@@ -8,7 +8,7 @@ class TimeTravel
     private $end;
 
     /**
-     * @return DateTime
+     * @return DateTimeImmutable
      */
     public function getStart()
     {
@@ -43,7 +43,7 @@ class TimeTravel
         return $this;
     }
 
-    public function __construct(DateTime $start, DateTime $end)
+    public function __construct(DateTimeImmutable $start, DateTime $end)
     {
         $this->start = $start;
         $this->end = $end;
@@ -66,14 +66,14 @@ class TimeTravel
      * @return string
      * @throws Exception
      */
-    public function findDate(int $numberDays)
+    public function findDate(int $nbSeconds)
     {
-        if($numberDays >= 0) {
-            $interval = new DateInterval('P' . $numberDays . 'D');
+        if($nbSeconds >= 0) {
+            $interval = DateInterval::createFromDateString($nbSeconds . 'seconds');
             $findDate = $this->getStart()->add($interval);
         } else {
-            $numberDays = -$numberDays;
-            $interval = new DateInterval('P' . $numberDays . 'D');
+            $nbSeconds = -$nbSeconds;
+            $interval = DateInterval::createFromDateString($nbSeconds . 'seconds');
             $findDate = $this->getStart()->sub($interval);
         }
         return 'Doc a été retrouvé, nous sommes le ' . $findDate->format('d/m/Y') . '<br/>';
@@ -99,9 +99,8 @@ class TimeTravel
     }
 }
 
-
 // Je choisis les dates de début et date de fin
-$start = new DateTime('31-05-1985 10:02:59');
+$start = new DateTimeImmutable('31-05-1985');
 $end = new DateTime('31-06-1988 12:48:48');
 
 // Fonction getTravelInfo pour calculer la différence de temps entre la date de début et celle de fin
@@ -110,8 +109,9 @@ echo $travel->getTravelInfo();
 
 // Fonction findDate qui renvoi une date d'arrivée numberDays après ou avant la date de départ.
 // Nombre positif pour un voyage dans le futur, nombre négatif pour voyage dans le passé
-echo $travel->findDate(-11574);
+echo $travel->findDate(-1000000000);
 
 // Fonction backToFutureStepByStep qui renvoi toutes les étapes du voyage pour "revenir dans le futur"
 $step = 'P1M1WT24H';
 $travel->backToFutureStepByStep($step);
+
